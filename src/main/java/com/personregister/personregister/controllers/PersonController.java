@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -28,5 +30,29 @@ public class PersonController {
         BeanUtils.copyProperties(personDTO, personModel);
         personModel.setBirthDate(LocalDate.parse(LocalDateType.FORMATTER.format(personDTO.getBirthDate())));
         return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personModel));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Person>> getAllPersons() {
+        return ResponseEntity.status(HttpStatus.OK).body(personService.findAll());
+    }
+
+    @GetMapping("/name={name}")
+    public ResponseEntity<?> getNameSearched(@PathVariable(value = "name") String name) {
+        Optional<Person> personOptional = personService.findByName(name);
+        if (!personOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Person with name '" + name + "' not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(personOptional.get());
+    }
+
+    @DeleteMapping("/id={id}")
+    public ResponseEntity<Object> deletePerson(@PathVariable(value = "id") Long id) {
+        Optional<Person> personOptional = personService.findById(id);
+        if (!personOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Person not found");
+        }
+        personService.delete(personOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Person deleted successfully");
     }
 }
