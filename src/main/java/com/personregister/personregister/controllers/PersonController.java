@@ -29,6 +29,11 @@ public class PersonController {
         Person personModel = new Person();
         BeanUtils.copyProperties(personDTO, personModel);
         personModel.setBirthDate(LocalDate.parse(LocalDateType.FORMATTER.format(personDTO.getBirthDate())));
+        personModel.setEmail(personDTO.getEmail());
+
+        if (personDTO.getPhoneNumber() != null) {
+            personModel.setPhoneNumber(personDTO.getPhoneNumber());
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personModel));
     }
 
@@ -55,4 +60,16 @@ public class PersonController {
         personService.delete(personOptional.get());
         return ResponseEntity.status(HttpStatus.OK).body("Person deleted successfully");
     }
+
+    @GetMapping("/details/{id}")
+    public ResponseEntity<?> getPersonDetails(@PathVariable Long id) {
+        Optional<Person> personOptional = personService.findById(id);
+        if (!personOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Person not found");
+        }
+
+        Person person = personOptional.get();
+        return ResponseEntity.status(HttpStatus.OK).body(person);
+    }
+
 }
