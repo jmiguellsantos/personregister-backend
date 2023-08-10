@@ -63,7 +63,7 @@ public class PersonController {
 
     @GetMapping("/details/{id}")
     public ResponseEntity<?> getPersonDetails(@PathVariable Long id) {
-        Optional<Person> personOptional = personService.findById(id);
+        Optional<Person> personOptional = personService.findByIdWithContacts(id);
         if (!personOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Person not found");
         }
@@ -71,5 +71,6 @@ public class PersonController {
         Person person = personOptional.get();
         return ResponseEntity.status(HttpStatus.OK).body(person);
     }
+
 
 }

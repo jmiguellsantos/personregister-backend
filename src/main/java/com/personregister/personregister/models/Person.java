@@ -23,10 +23,8 @@ public class Person implements Serializable {
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
     private String email;
-
     @Column
     private String phoneNumber;
-
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Contact> contacts = new ArrayList<>();
 
