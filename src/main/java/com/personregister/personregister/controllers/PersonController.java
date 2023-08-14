@@ -71,6 +71,4 @@ public class PersonController {
         Person person = personOptional.get();
         return ResponseEntity.status(HttpStatus.OK).body(person);
     }
-
-
 }
